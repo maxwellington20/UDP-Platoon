@@ -8,13 +8,19 @@ import time
 
 #initial client values, mostly taken from provided project files
 seq_num = 5895
-port_num = 6789
+port_to_Y = 5679
+port_to_Z = 5678
 pos = "14 S 368052 3899189"
 vel = 110.0
 t_sec = 0.2
 accel = 1.38
 brk_ctrl = 0.0
 throttle = 0.46
+
+#just for clarity's sake when viewing the three terminals
+print("============================================")
+print("==============> TruckX Log <================")
+print("============================================\n")
 
 
 #####################
@@ -72,7 +78,7 @@ print("Initial Velocity: %.1fkm/h" %(vel))
 print("Time Interval: %.1fs" %(t_sec))
 print("============================================")
 
-def sendAndReceive(serv_addr): #made this to streamline the testing proccess
+def sendAndReceive(serv_addr, port_num): #made this to streamline the testing proccess
     #send client packet
     data = createPacket()
     clientSock.sendto(data, (serv_addr, port_num))
@@ -85,7 +91,8 @@ def sendAndReceive(serv_addr): #made this to streamline the testing proccess
         printPacketRecv(serv_pack)
         break
 
-sendAndReceive(addr) #execute with original info
+#send to Z first
+sendAndReceive(addr, port_to_Z) #execute with original info
 
 
 # i am an undergrad and only doing the following tests to see if I can, so I
@@ -100,9 +107,12 @@ pos = "14 S 368048 3899185"
 vel = 112.88
 accel = 2.63
 throttle = 0.46
-sendAndReceive(addr) #execute with new changes
+sendAndReceive(addr, port_to_Z) #execute with new changes
 
-#final change
-seq_num = 99999 #program uses this sequence number to tell server it is disconnecting
-#sendAndReceive(addr)
+while True:
+    n = input("Finished? (y/n): ")
+    if (n == "y"):
+        quit()
+
+
 

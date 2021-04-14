@@ -7,11 +7,15 @@ import socket
 import time
 
 #initial server values, mostly taken from provided project files
-port = 6789
+port = 5678
 pos = "14 S 368058 3899192"
 vel = 110.0
 t_sec = 0.2
 
+#just for clarity's sake when viewing the three terminals
+print("============================================")
+print("==============> TruckZ Log <================")
+print("============================================\n")
 
 ####################################
 # Establishing Server Socket (UDP) #
