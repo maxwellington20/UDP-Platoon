@@ -1,4 +1,4 @@
-# Program to simulate the second following truck
+# Program to simulate the first following truck
 # by Maxwell Ern, 
 # The following program builds on the previous project by allowing
 # connections with mulitple clients. 
@@ -7,14 +7,14 @@ import socket
 import time
 
 #initial server values, mostly taken from provided project files
-port = 5678 #port specific to Z
+port = 5679 #port specific to Y
 pos = "14 S 368058 3899192"
 vel = 110.0
 t_sec = 0.2
 
 #just for clarity's sake when viewing the three terminals
 print("============================================")
-print("==============> TruckZ Log <================")
+print("==============> TruckY Log <================")
 print("============================================\n")
 
 ####################################
@@ -164,7 +164,3 @@ while True:
     printPacketSent(ack_num) #print the sent ack packet
 
     time.sleep(t_sec) #wait a bit before receiving more packets
-
-
-
-

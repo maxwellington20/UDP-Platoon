@@ -34,8 +34,15 @@ def createPacket():
     return str.encode(client_pack) #convert list of variables to bytes
 
 #print packet info
-def printPacketSent():
-    print("Packet Sent:")
+def printPacketSent(port_num):
+    truck = ""
+    if (port_num == port_to_Y):
+        truck = "Truck Y"
+    elif (port_num == port_to_Z):
+        truck = "Truck Z"
+    else: 
+        truck = "Unknown Port Number"
+    print("Packet Sent to %s:" %(truck))
 
     if(seq_num == 99999): # signals that client will disconnect from server
         print("Type = Socket Disconnection")
@@ -52,8 +59,15 @@ def printPacketSent():
     print("Gas Throttle = %.2f\n" %(throttle))
 
 #print ack info
-def printPacketRecv(num):
-    print("Packet Received:")
+def printPacketRecv(num, port_num):
+    truck = ""
+    if (port_num == port_to_Y):
+        truck = "Truck Y"
+    elif (port_num == port_to_Z):
+        truck = "Truck Z"
+    else: 
+        truck = "Unknown Port Number"
+    print("Packet Received from %s:" %(truck))
     print("Type = Ack")
     print("Sequence No. = %s\n" %(num))
 
@@ -70,7 +84,7 @@ addr=socket.gethostbyname(socket.gethostname())
 if addr=="127.0.0.1":
     print("No internet, your localhost is "+ addr)
 else:
-    print("Connected, with the IP address: "+ addr)
+    print("Connected with IP address: "+ addr)
 
 #print initial values
 print("\nInitial GPS Position: %s" %(pos))
@@ -82,17 +96,17 @@ def sendAndReceive(serv_addr, port_num): #made this to streamline the testing pr
     #send client packet
     data = createPacket()
     clientSock.sendto(data, (serv_addr, port_num))
-    printPacketSent()
+    printPacketSent(port_num)
 
     while True:
         time.sleep(t_sec) #wait a bit before looking to recieve
         data, serv_addr = clientSock.recvfrom(1024) #recieve server packet
         serv_pack = bytes.decode(data)
-        printPacketRecv(serv_pack)
+        printPacketRecv(serv_pack, port_num)
         break
 
 #send to Z first
-sendAndReceive(addr, port_to_Z) #execute with original info
+sendAndReceive(addr, port_to_Y) #execute with original info
 
 
 # i am an undergrad and only doing the following tests to see if I can, so I
