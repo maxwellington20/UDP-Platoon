@@ -8,9 +8,12 @@ import time
 
 #initial server values, mostly taken from provided project files
 port = 5679 #port specific to Y
+port_to_Z = 5678
 pos = "14 S 368058 3899192"
 vel = 110.0
 t_sec = 0.2
+seq_num_Y = 4924 #this is specific to Y
+
 
 #just for clarity's sake when viewing the three terminals
 print("============================================")
@@ -30,6 +33,8 @@ if addr=="127.0.0.1":
     print("No internet, your localhost is "+ addr)
 else:
     print("Connected with IP address: "+ addr)
+
+addrOut = addr
 
 #bind to ip addr and port number
 servSock.bind((addr, port))
@@ -51,9 +56,9 @@ def socketClosed(num):
     quit()
 
 #extracts variables from packet and prints results as they are interpreted
+#as of project 2 this will also add the data to data_to_Z to prep for sending
 def printPacketStats(packet):
 
-    print("Packet Received:")
     arr = list(packet) #splits up packet variables into list
     i = 0 #counter to go through arr list
 
@@ -61,7 +66,16 @@ def printPacketStats(packet):
     # in one big while loop, but I kept getting IndexOutOfBounds 
     # and ran out of time to solve the issue :(
 
-    #first is sequence number
+    #first is truck received from
+    temp = []
+    while (arr[i] != ','):
+        temp.append(arr[i])
+        i = i + 1
+    truck_received_from = getVarString(temp)
+    print("Packet Received From Truck %s:" %(truck_received_from))
+    i = i + 1
+
+    #second is sequence number
     temp = []
     while (arr[i] != ','):
         temp.append(arr[i])
@@ -75,7 +89,7 @@ def printPacketStats(packet):
     
     print("Sequence No. = %s" %(seq_num))
 
-    #second is client ip address
+    #next is client ip address
     temp = []
     while (arr[i] != ','):
         temp.append(arr[i])
@@ -84,7 +98,7 @@ def printPacketStats(packet):
     i = i + 1
     print("IP = %s" %(client_ip))
 
-    #third is client position
+    #next is client position
     temp = []
     while (arr[i] != ','):
         temp.append(arr[i])
@@ -93,7 +107,7 @@ def printPacketStats(packet):
     i = i + 1
     print("GPS Position = %s" %(client_pos))
     
-    #fourth is client velocity
+    #next is client velocity
     temp = []
     while (arr[i] != ','):
         temp.append(arr[i])
@@ -102,7 +116,7 @@ def printPacketStats(packet):
     i = i + 1
     print("Velocity = %s" %(client_velocity))
 
-    #fifth is client acceleration
+    #next is client acceleration
     temp = []
     while (arr[i] != ','):
         temp.append(arr[i])
@@ -111,7 +125,7 @@ def printPacketStats(packet):
     i = i + 1
     print("Acceleration = %s" %(client_accel))
 
-    #sixth is client brake control
+    #next is client brake control
     temp = []
     while (arr[i] != ','):
         temp.append(arr[i])
@@ -129,11 +143,41 @@ def printPacketStats(packet):
     i = i + 1
     print("Gas Throttle = %s\n" %(client_gt))
 
-    return seq_num #returns packet's sequence number to use in the ack packet
+    ###############################################
+    # New to this project: send Y's new info to Z #
+    ###############################################
+    pack_to_send = "Y," + str(seq_num_Y) + "," + str(addr) + "," + str(client_pos) + "," + str(client_velocity)
+    pack_to_send += "," + str(client_accel) + "," + str(client_bc) + "," + str(client_gt) + ","
+    data_to_Z = str.encode(pack_to_send) #convert list of variables to bytes
+
+    #send prepared packet to Z
+    clientSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    clientSock.sendto(data_to_Z, (addrOut, port_to_Z))
+
+    #print sent packet
+    print("Packet Sent to Truck Z:")
+    print("Sequence No. = %s" %(seq_num_Y))
+    print("IP = %s" %(addrOut))
+    print("GPS Position = %s" %(client_pos))
+    print("Velocity = %s" %(client_velocity))
+    print("Acceleration = %s" %(client_accel))
+    print("Brake Control = %s" %(client_bc))
+    print("Gas Throttle = %s\n" %(client_gt))
+
+    #receive ack from Z
+    time.sleep(t_sec) #wait a bit before looking to recieve
+    data, client_ip = clientSock.recvfrom(1024) #recieve server packet
+    serv_pack = bytes.decode(data)
+    
+    print("Packet Received from Truck Z:")
+    print("Type = Ack")
+    print("Sequence No. = %s\n" %(serv_pack))
+
+    return seq_num #returns packet's sequence number to use in the ack packet to X
 
 #prints the ack packet when successfully sent
 def printPacketSent(num):
-    print("Ack Packet Sent:")
+    print("Ack Packet Sent to Truck X:")
     print("Type = Ack")
     print("Sequence No. = %s\n" %(num))
 
@@ -163,4 +207,5 @@ while True:
     servSock.sendto(ack, addr)
     printPacketSent(ack_num) #print the sent ack packet
 
-    time.sleep(t_sec) #wait a bit before receiving more packets
+    time.sleep(t_sec) #wait a bit
+

@@ -29,7 +29,7 @@ print("============================================\n")
 
 #prepare client_pack data
 def createPacket():
-    client_pack = str(seq_num) + "," + str(addr) + "," + str(pos) + "," + str(vel)
+    client_pack = "X," + str(seq_num) + "," + str(addr) + "," + str(pos) + "," + str(vel)
     client_pack += "," + str(accel) + "," + str(brk_ctrl) + "," + str(throttle) + ","
     return str.encode(client_pack) #convert list of variables to bytes
 
@@ -70,7 +70,7 @@ def printPacketRecv(num, port_num):
     print("Packet Received from %s:" %(truck))
     print("Type = Ack")
     print("Sequence No. = %s\n" %(num))
-
+    
 
 ##################
 # The Rest Of It #
@@ -105,23 +105,8 @@ def sendAndReceive(serv_addr, port_num): #made this to streamline the testing pr
         printPacketRecv(serv_pack, port_num)
         break
 
-#send to Z first
 sendAndReceive(addr, port_to_Y) #execute with original info
-
-
-# i am an undergrad and only doing the following tests to see if I can, so I
-# won't create ten different data exchanges like the grad requirement
-
-# in order to follow the scripts provided in the project1 folder on canvas,
-# I manually code changes in data here rather than in the terminal
-
-#new packet data
-seq_num += 1 
-pos = "14 S 368048 3899185"
-vel = 112.88
-accel = 2.63
-throttle = 0.46
-sendAndReceive(addr, port_to_Z) #execute with new changes
+sendAndReceive(addr, port_to_Z)
 
 while True:
     n = input("Finished? (y/n): ")

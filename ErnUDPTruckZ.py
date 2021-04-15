@@ -53,7 +53,6 @@ def socketClosed(num):
 #extracts variables from packet and prints results as they are interpreted
 def printPacketStats(packet):
 
-    print("Packet Received:")
     arr = list(packet) #splits up packet variables into list
     i = 0 #counter to go through arr list
 
@@ -61,7 +60,16 @@ def printPacketStats(packet):
     # in one big while loop, but I kept getting IndexOutOfBounds 
     # and ran out of time to solve the issue :(
 
-    #first is sequence number
+    #first is truck received from
+    temp = []
+    while (arr[i] != ','):
+        temp.append(arr[i])
+        i = i + 1
+    truck_received_from = getVarString(temp)
+    print("Packet Received From Truck %s:" %(truck_received_from))
+    i = i + 1
+
+    #second is sequence number
     temp = []
     while (arr[i] != ','):
         temp.append(arr[i])
@@ -75,7 +83,7 @@ def printPacketStats(packet):
     
     print("Sequence No. = %s" %(seq_num))
 
-    #second is client ip address
+    #next is client ip address
     temp = []
     while (arr[i] != ','):
         temp.append(arr[i])
@@ -84,7 +92,7 @@ def printPacketStats(packet):
     i = i + 1
     print("IP = %s" %(client_ip))
 
-    #third is client position
+    #next is client position
     temp = []
     while (arr[i] != ','):
         temp.append(arr[i])
@@ -93,7 +101,7 @@ def printPacketStats(packet):
     i = i + 1
     print("GPS Position = %s" %(client_pos))
     
-    #fourth is client velocity
+    #next is client velocity
     temp = []
     while (arr[i] != ','):
         temp.append(arr[i])
@@ -102,7 +110,7 @@ def printPacketStats(packet):
     i = i + 1
     print("Velocity = %s" %(client_velocity))
 
-    #fifth is client acceleration
+    #next is client acceleration
     temp = []
     while (arr[i] != ','):
         temp.append(arr[i])
@@ -111,7 +119,7 @@ def printPacketStats(packet):
     i = i + 1
     print("Acceleration = %s" %(client_accel))
 
-    #sixth is client brake control
+    #next is client brake control
     temp = []
     while (arr[i] != ','):
         temp.append(arr[i])
