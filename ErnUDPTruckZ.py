@@ -27,7 +27,8 @@ servSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 #get ip address
 addr=socket.gethostbyname(socket.gethostname())
 if addr=="127.0.0.1":
-    print("No internet, your localhost is "+ addr)
+    print("No internet, exiting program")
+    quit()
 else:
     print("Connected with IP address: "+ addr)
 
@@ -156,7 +157,9 @@ print("Initial Velocity: %.1fkm/h" %(vel))
 print("Time Interval: %.1fs" %(t_sec))
 print("============================================")
 
+
 #main while loop to operate under
+loop_count = 1 #for scripting we're only gonna go through the while loop twice
 while True:
     #receive packet from lead truck
     data, addr = servSock.recvfrom(1024)
@@ -172,6 +175,10 @@ while True:
     printPacketSent(ack_num) #print the sent ack packet
 
     time.sleep(t_sec) #wait a bit before receiving more packets
+
+    if (loop_count == 2): #for scripting we're only gonna go through loop twice (getting packets from X and Y)
+        quit()
+    loop_count += 1
 
 
 

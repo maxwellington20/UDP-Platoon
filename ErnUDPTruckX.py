@@ -82,7 +82,8 @@ clientSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 #get ip address
 addr=socket.gethostbyname(socket.gethostname())
 if addr=="127.0.0.1":
-    print("No internet, your localhost is "+ addr)
+    print("No internet, exiting program")
+    quit()
 else:
     print("Connected with IP address: "+ addr)
 
@@ -108,10 +109,7 @@ def sendAndReceive(serv_addr, port_num): #made this to streamline the testing pr
 sendAndReceive(addr, port_to_Y) #execute with original info
 sendAndReceive(addr, port_to_Z)
 
-while True:
-    n = input("Finished? (y/n): ")
-    if (n == "y"):
-        quit()
+quit() #for scripting we're only gonna send/recieve four packets, to/from Y and Z
 
 
 

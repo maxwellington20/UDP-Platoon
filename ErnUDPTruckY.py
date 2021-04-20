@@ -30,7 +30,8 @@ servSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 #get ip address
 addr=socket.gethostbyname(socket.gethostname())
 if addr=="127.0.0.1":
-    print("No internet, your localhost is "+ addr)
+    print("No internet, exiting program")
+    quit()
 else:
     print("Connected with IP address: "+ addr)
 
@@ -208,4 +209,6 @@ while True:
     printPacketSent(ack_num) #print the sent ack packet
 
     time.sleep(t_sec) #wait a bit
+
+    quit() #for scripting we're only gonna send/recieve four packets, to/from X and Z
 
